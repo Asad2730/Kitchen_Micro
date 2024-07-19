@@ -1,6 +1,7 @@
-package main
+package server
 
 import (
+	"log"
 	"net"
 
 	handler "github.com/Asad2730/Kitchen_Micro/services/orders/handler/orders"
@@ -18,9 +19,9 @@ func NewGRPCServer(add string) *gRPCServer {
 
 func (s *gRPCServer) Run() error {
 
-	listen, err := net.Listen("tcp", s.addr)
+	lis, err := net.Listen("tcp", s.addr)
 	if err != nil {
-		return err
+		log.Fatalf("failed to listen to %v", err)
 	}
 	gRPCServer := grpc.NewServer()
 
@@ -28,8 +29,6 @@ func (s *gRPCServer) Run() error {
 	orderService := service.NewOrderService()
 	handler.NewGrpcHandler(gRPCServer, orderService)
 
-	if err := gRPCServer.Serve(listen); err != nil {
-		return err
-	}
-	return nil
+	log.Println("Started gRPC server on", s.addr)
+	return gRPCServer.Serve(lis)
 }

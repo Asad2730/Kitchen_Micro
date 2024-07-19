@@ -4,6 +4,7 @@ option go_package = "./generated/orders";
 
 service OrderService {
     rpc CreateOrder (CreateOrderRequest) returns (CreateOrderResponse);
+    rpc GetOrders(GetOrdersRequest) returns (GetOrderResponse);
 }
 
 
@@ -30,4 +31,8 @@ message GetOrderRequest{
 
 message GetOrderResponse{
     repeated Order orders = 1;
+}
+
+message GetOrdersRequest {
+    int32 customerID = 1;
 }

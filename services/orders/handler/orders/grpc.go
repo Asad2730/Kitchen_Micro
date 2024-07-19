@@ -9,22 +9,22 @@ import (
 )
 
 type OrdersGrpcHandler struct {
-	orders.UnimplementedOrderServiceServer
 	orderService types.OrderService
+	orders.UnimplementedOrderServiceServer
 }
 
-func NewGrpcHandler(gRpc *grpc.Server, oderService types.OrderService) {
-	ordersGrpcHandler := &OrdersGrpcHandler{orderService: oderService}
+func NewGrpcHandler(gRpc *grpc.Server, orderService types.OrderService) {
+	gRPCHandler := &OrdersGrpcHandler{orderService: orderService}
 
-	orders.RegisterOrderServiceServer(gRpc, ordersGrpcHandler)
+	orders.RegisterOrderServiceServer(gRpc, gRPCHandler)
 }
 
 func (h *OrdersGrpcHandler) CreateOrder(ctx context.Context, req *orders.CreateOrderRequest) (*orders.CreateOrderResponse, error) {
 	order := &orders.Order{
 		OrderID:    42,
-		CustomerID: 2,
-		ProductID:  1,
-		Quantity:   10,
+		CustomerID: req.CustomerID,
+		ProductID:  req.ProductID,
+		Quantity:   req.Quantity,
 	}
 
 	err := h.orderService.CreateOrder(ctx, order)
